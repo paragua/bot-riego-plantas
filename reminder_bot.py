@@ -5,7 +5,7 @@ import os
 
 TOKEN = os.getenv('DISCORD_TOKEN')
 CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
-INACTIVITY_HOURS = 0.083  # 5 minutos
+INACTIVITY_HOURS = 1.5  # 1hs 30
 
 intents = discord.Intents.default()
 intents.messages = True
@@ -13,7 +13,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-@tasks.loop(minutes=2)  # Revisa cada 30 minutos
+@tasks.loop(minutes=30)  # Revisa cada 30 minutos
 async def check_inactivity():
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
