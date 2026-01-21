@@ -1,24 +1,26 @@
+import os
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, timezone
-import os
-from dotenv import load_dotenv
 
-load_dotenv()
 TOKEN = os.getenv('DISCORD_TOKEN')
-CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
+CHANNEL_ID_RAW = os.getenv('CHANNEL_ID')
 
-INACTIVITY_HOURS = 0.1  # Horas de inactividad
+print("TOKEN:", repr(TOKEN))
+print("CHANNEL_ID_RAW:", repr(CHANNEL_ID_RAW))
+
+if CHANNEL_ID_RAW is None:
+    raise RuntimeError("CHANNEL_ID no está definido en las variables de entorno")
+
+CHANNEL_ID = int(CHANNEL_ID_RAW)
+INACTIVITY_HOURS = 1
+
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
-print("TOKEN:", repr(TOKEN))
-print("CHANNEL_ID_RAW:", repr(os.getenv('CHANNEL_ID')))
-CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
 
 
 @tasks.loop(minutes=2)  # Revisa cada 30 minutos
