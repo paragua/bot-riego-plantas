@@ -1,30 +1,17 @@
-import os
 import discord
 from discord.ext import commands, tasks
 from datetime import datetime, timezone
+import os
 
 TOKEN = os.getenv('DISCORD_TOKEN')
-CHANNEL_ID_RAW = os.getenv('CHANNEL_ID')
-
-print("TOKEN:", repr(TOKEN))
-print("CHANNEL_ID_RAW:", repr(CHANNEL_ID_RAW))
-
-if not TOKEN:
-    raise RuntimeError("DISCORD_TOKEN no está definido en las variables de entorno")
-
-if not CHANNEL_ID_RAW:
-    raise RuntimeError("CHANNEL_ID no está definido en las variables de entorno")
-
-CHANNEL_ID = int(CHANNEL_ID_RAW)
-INACTIVITY_HOURS = 1  # o el valor que quieras
-
+CHANNEL_ID = int(os.getenv('CHANNEL_ID'))
+INACTIVITY_HOURS = 0.083  # 5 minutos
 
 intents = discord.Intents.default()
 intents.messages = True
 intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
-
 
 @tasks.loop(minutes=2)  # Revisa cada 30 minutos
 async def check_inactivity():
