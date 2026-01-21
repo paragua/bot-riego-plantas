@@ -34,7 +34,7 @@ async def check_inactivity():
                 # Verificar que el último mensaje no sea del bot
                 if not message.author.bot:
                     await channel.send(
-                        f"⏰ **Recordatorio**: NO OLVIDEN REGAR LAS PLANTAS! @everyone")
+                        f"### NO OLVIDEN REGAR LAS PLANTAS! @everyone")
                     print(f"Recordatorio enviado - Inactividad: {hours_passed:.1f} horas")
             else:
                 print(f"Canal activo - Último mensaje hace {hours_passed:.1f} horas")
