@@ -9,11 +9,14 @@ CHANNEL_ID_RAW = os.getenv('CHANNEL_ID')
 print("TOKEN:", repr(TOKEN))
 print("CHANNEL_ID_RAW:", repr(CHANNEL_ID_RAW))
 
-if CHANNEL_ID_RAW is None:
+if not TOKEN:
+    raise RuntimeError("DISCORD_TOKEN no está definido en las variables de entorno")
+
+if not CHANNEL_ID_RAW:
     raise RuntimeError("CHANNEL_ID no está definido en las variables de entorno")
 
 CHANNEL_ID = int(CHANNEL_ID_RAW)
-INACTIVITY_HOURS = 1
+INACTIVITY_HOURS = 1  # o el valor que quieras
 
 
 intents = discord.Intents.default()
