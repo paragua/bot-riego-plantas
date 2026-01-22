@@ -13,7 +13,7 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-@tasks.loop(minutes=30)  # Revisa cada 30 minutos
+@tasks.loop(minutes=10)  # Revisa cada 30 minutos
 async def check_inactivity():
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
