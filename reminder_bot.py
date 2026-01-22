@@ -13,7 +13,8 @@ intents.message_content = True
 
 bot = commands.Bot(command_prefix='!', intents=intents)
 
-@tasks.loop(minutes=10)  # Revisa cada 10 minutos
+
+@tasks.loop(minutes=10)
 async def check_inactivity():
     channel = bot.get_channel(CHANNEL_ID)
     if not channel:
@@ -21,24 +22,27 @@ async def check_inactivity():
         return
 
     try:
-        # Obtener el último mensaje
-        async for message in channel.history(limit=1):
-            last_message_time = message.created_at
-            current_time = datetime.now(timezone.utc)
-            time_diff = current_time - last_message_time
+        # Buscar el último mensaje de un HUMANO (ignorar todos los bots)
+        last_human_message = None
+        async for message in channel.history(limit=10):  # ← Revisar últimos 10 mensajes
+            if not message.author.bot:  # ← Encontrar primer mensaje humano
+                last_human_message = message
+                break
 
-            hours_passed = time_diff.total_seconds() / 3600
+        if not last_human_message:
+            print("No hay mensajes de humanos en el historial")
+            return
 
-            # Si pasó más tiempo del configurado
-            if hours_passed >= INACTIVITY_HOURS:
-                # Verificar que el último mensaje no sea del bot
-                if not message.author.bot:
-                    await channel.send(
-                        f"### NO OLVIDEN REGAR LAS PLANTAS! @everyone")
-                    print(f"Recordatorio enviado - Inactividad: {hours_passed:.1f} horas")
-            else:
-                print(f"Canal activo - Último mensaje hace {hours_passed:.1f} horas")
-            break
+        current_time = datetime.now(timezone.utc)
+        time_diff = current_time - last_human_message.created_at
+        hours_passed = time_diff.total_seconds() / 3600
+
+        if hours_passed >= INACTIVITY_HOURS:
+            await channel.send("### NO OLVIDEN REGAR LAS PLANTAS! @everyone")
+            print(f"Recordatorio enviado - Inactividad: {hours_passed:.1f} horas")
+        else:
+            print(f"Canal activo - Último mensaje humano hace {hours_passed:.1f} horas")
+
     except Exception as e:
         print(f"Error al verificar inactividad: {e}")
 
