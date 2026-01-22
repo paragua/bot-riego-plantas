@@ -43,11 +43,16 @@ async def check_inactivity():
         print(f"Error al verificar inactividad: {e}")
 
 
+@tasks.loop(seconds=60)
+async def keep_alive():
+    pass  # Mantiene el contenedor vivo
+
 @bot.event
 async def on_ready():
     print(f'✅ Bot conectado como {bot.user}')
     print(f'📊 Monitoreando canal ID: {CHANNEL_ID}')
     check_inactivity.start()
+    keep_alive.start()  # ← AGREGAR ESTA LÍNEA
 
 
 @bot.event
